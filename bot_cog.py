@@ -33,10 +33,13 @@ class BotCog(commands.Cog):
 
     @commands.command()
     async def set(self, ctx, tts_type):
-        if tts_type not in ['google', 'edge', 'milk']:
-            await ctx.send("TTS 유형이 잘못되었습니다. 'google', 'edge', 'milk' 중에서 선택하세요.")
+        if tts_type not in ['google', 'edge', 'milk', '수아', '미미르', '아린', '연화', '유화', '선배']:
+            await ctx.send("TTS 유형이 잘못되었습니다. 'google', 'edge', 'milk', '수아', '미미르', '아린', '연화', '유화', '선배' 중 하나를 입력해 주세요.")
             return
-
+        if tts_type == 'milk':
+            get_vits.set_model("vits_models/configs/milk.json", "vits_models/models/milk.pth")
+        if tts_type != 'milk':
+            get_vits.set_model("vits_models/configs/v1.json", "vits_models/models/v1.pth")
         self.tts_settings[ctx.channel.id] = tts_type
         await ctx.send(f"이 채널의 TTS 유형이 설정되었습니다. {tts_type}.")
 
@@ -56,8 +59,27 @@ class BotCog(commands.Cog):
         elif tts_type == 'edge':
             await get_etts(message, ctx.channel.id)
         elif tts_type == 'milk':
+            get_vits.set_model("vits_models/configs/milk.json", "vits_models/models/milk.pth")
             get_vits.tts_fn = get_vits.create_tts_fn(get_vits.net_g, get_vits.hps, get_vits.speaker_ids)
             get_vits.tts_fn(message, "Milk", 1.0, "한국어", ctx.channel.id)
+        elif tts_type == '수아':
+            get_vits.tts_fn = get_vits.create_tts_fn(get_vits.net_g, get_vits.hps, get_vits.speaker_ids)
+            get_vits.tts_fn(message, "수아", 1.0, None, ctx.channel.id)
+        elif tts_type == '미미르':
+            get_vits.tts_fn = get_vits.create_tts_fn(get_vits.net_g, get_vits.hps, get_vits.speaker_ids)
+            get_vits.tts_fn(message, "미미르", 1.0, None, ctx.channel.id)
+        elif tts_type == '아린':
+            get_vits.tts_fn = get_vits.create_tts_fn(get_vits.net_g, get_vits.hps, get_vits.speaker_ids)
+            get_vits.tts_fn(message, "아린", 1.0, None, ctx.channel.id)
+        elif tts_type == '연화':
+            get_vits.tts_fn = get_vits.create_tts_fn(get_vits.net_g, get_vits.hps, get_vits.speaker_ids)
+            get_vits.tts_fn(message, "연화", 1.0, None, ctx.channel.id)
+        elif tts_type == '유화':
+            get_vits.tts_fn = get_vits.create_tts_fn(get_vits.net_g, get_vits.hps, get_vits.speaker_ids)
+            get_vits.tts_fn(message, "유화", 1.0, None, ctx.channel.id)
+        elif tts_type == '선배':
+            get_vits.tts_fn = get_vits.create_tts_fn(get_vits.net_g, get_vits.hps, get_vits.speaker_ids)
+            get_vits.tts_fn(message, "선배", 1.0, None, ctx.channel.id)
         source = discord.FFmpegPCMAudio(f"output/{ctx.channel.id}_output.wav")
         ctx.voice_client.play(source)
 

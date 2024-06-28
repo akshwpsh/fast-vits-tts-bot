@@ -26,8 +26,10 @@ language_marks = {
 }
 lang = ['한국어', '日本語', '简体中文', 'English', 'Mix']
 
-config_dir = "vits_models/configs/config.json"
-model_dir = "vits_models/models/G_latest.pth"
+config_dir = "vits_models/configs/milk.json"
+model_dir = "vits_models/models/milk.pth"
+
+
 
 hps = utils.get_hparams_from_file(config_dir)
 net_g = SynthesizerTrn(
@@ -39,6 +41,19 @@ net_g = SynthesizerTrn(
 _ = net_g.eval()
 _ = utils.load_checkpoint(model_dir, net_g, None)
 speaker_ids = hps.speakers
+
+def set_model(config_dir, model_dir):
+    global hps, net_g, speaker_ids
+    hps = utils.get_hparams_from_file(config_dir)
+    net_g = SynthesizerTrn(
+        len(hps.symbols),
+        hps.data.filter_length // 2 + 1,
+        hps.train.segment_size // hps.data.hop_length,
+        n_speakers=hps.data.n_speakers,
+        **hps.model).to(device)
+    _ = net_g.eval()
+    _ = utils.load_checkpoint(model_dir, net_g, None)
+    speaker_ids = hps.speakers
 
 
 def get_text(text, hps, is_symbol):
